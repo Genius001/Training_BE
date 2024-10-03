@@ -1,0 +1,26 @@
+hal yang diperlukan untuk BE
+
+Framework yang diperlukan:
+1. NodeJS
+2. ExpressJS
+
+URL Routing
+
+HTTP Method (GET, POST, PUT, PATCH, DELETE)
+
+Body & Parameters
+
+Middleware
+
+Database yang digunakan:
+PostgreSQL
+
+Authentication & Authorization yang digunakan:
+JWT (JavaScript Web Token)
+
+Error Handling (404, 500)
+
+Testing & Debugging yang digunakan:
+Jest
+
+Deployment
