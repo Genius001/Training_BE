@@ -1,5 +1,3 @@
-const { status } = require("express/lib/response");
-
 //abstraction / abstract class
 class BaseController {
     constructor(model) {
@@ -55,7 +53,7 @@ class BaseController {
 
         } catch (error) {
             console.log(error);
-            throw new NotFoundError
+            // throw new NotFoundError
         }
     }
 
@@ -95,7 +93,7 @@ class BaseController {
             return res.status(204).json(
                 this.apiSend({
                     status: 'success',
-                    message: 'Data deleted successfully',
+                    message: `Data with id ${req.params.id} deleted successfully`,
                     data: resource
                 })
             );
@@ -103,6 +101,18 @@ class BaseController {
             console.log(error);
         }
     }
+
+    apiSend({
+        code, status, message, data, pagination
+    }) {
+        return {
+            code,
+            status,
+            message,
+            data,
+            ...(pagination && pagination),
+        };
+    }
 }
 
-module.exports = BaseController
+module.exports = BaseController;
