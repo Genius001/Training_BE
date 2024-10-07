@@ -4,6 +4,7 @@ const BaseController = require("../base");
 const UserModel = require("../../models/users");
 const express = require("express");
 const ValidationError = require("../../helpers/errors/validation");
+const { encryptPassword } = require("../../helpers/bcrypt");
 const router = express.Router();
 
 const users = new UserModel();
@@ -25,7 +26,7 @@ class UsersController extends BaseController {
     constructor(model) {
         super(model);
         router.get("/", this.getAll);
-        router.post("/", this.validation(userSchema), this.checkUnique, this.create);
+        router.post("/", this.validation(userSchema), this.checkUnique, this.encrypt, this.create);
         router.get("/:id", this.get);
         router.put("/:id", this.validation(userSchema), this.checkUnique, this.update);
         router.delete("/:id", this.delete);
@@ -51,9 +52,13 @@ class UsersController extends BaseController {
         })
         if (checkUnique) {
             return next(new ValidationError("Email or Phone number already exists"));
-
-            next()
-        }
+        };
+        next()
+    }
+    encrypt = async (req, res, next) => {
+        const encryptedPass = await encryptPassword(req.body.password);
+        req.body.password = encryptedPass;
+        next();
     }
 }
 new UsersController(users);
