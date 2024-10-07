@@ -72,7 +72,7 @@ model users {
   avatar         String?   @db.VarChar
   phone_number   String    @unique @db.VarChar
   driver_license String?
-  birthdate      DateTime? @db.Date
+  birthdate      String?
   createdDt      DateTime? @default(now()) @db.Timestamp(6)
   updatedDt      DateTime? @updatedAt
   createdBy      String?   @db.VarChar

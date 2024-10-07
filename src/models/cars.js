@@ -1,18 +1,18 @@
-const BaseModel = require('./index');
+const BaseModel = require("./index");
+
 //inheritance
 class CarModel extends BaseModel {
     constructor() {
-        super('cars');
+        super("cars");
         this.select = {
             id: true,
             name: true,
-            year: true,
-            type: true,
             manufactur: true,
-            price: true,
             img: true,
+            year: true,
+            price: true,
         };
-    };
-};
+    }
+}
 
-module.exports = new CarModel()
+module.exports = CarModel
