@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 //abstract class
 class BaseModel {
     //encapsulation
-    #pass = "1234";
+    // #pass = "1234";
     constructor(model) {
         this.model = prisma[model];
     }
