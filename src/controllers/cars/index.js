@@ -28,9 +28,9 @@ class CarsController extends BaseController {
     constructor(model) {
         super(model);
         router.get("/", this.getAll);
-        router.post("/", this.validation(carSchema), authorize, checkRole(["admin"]), this.create);
+        router.post("/", authorize, checkRole(["admin"]), this.validation(carSchema), this.create);
         router.get("/:id", this.get);
-        router.put("/:id", this.validation(carSchema), authorize, checkRole(["admin"]), this.update);
+        router.put("/:id", authorize, checkRole(["admin"]), this.validation(carSchema), this.update);
         router.delete("/:id", this.delete);
     }
 }
