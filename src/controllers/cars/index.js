@@ -1,9 +1,9 @@
-
 const Joi = require("joi");
 
 const BaseController = require('../base')
 const CarModel = require('../../models/cars')
 const express = require("express");
+const { authorize, checkRole } = require('../../middlewares/authorization')
 const router = express.Router();
 
 const cars = new CarModel();
@@ -28,9 +28,9 @@ class CarsController extends BaseController {
     constructor(model) {
         super(model);
         router.get("/", this.getAll);
-        router.post("/", this.validation(carSchema), this.create);
+        router.post("/", this.validation(carSchema), authorize, checkRole(["admin"]), this.create);
         router.get("/:id", this.get);
-        router.put("/:id", this.validation(carSchema), this.update);
+        router.put("/:id", this.validation(carSchema), authorize, checkRole(["admin"]), this.update);
         router.delete("/:id", this.delete);
     }
 }
