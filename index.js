@@ -1,4 +1,5 @@
 require('dotenv').config()
+const path = require('path');
 const express = require("express");
 const http = require("http");
 // const routes = require('./src/routes');
@@ -11,6 +12,8 @@ const errorHandler = require("./src/middlewares/errorHandler");
 require("./src/helpers/errors");
 
 app.use(express.json());
+
+app.use("/public", express.static(path.resolve(__dirname, "public")));
 
 require("./src/routes")(app);
 
