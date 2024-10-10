@@ -5,32 +5,42 @@ const UserModel = require("../../models/users");
 const express = require("express");
 const ValidationError = require("../../helpers/errors/validation");
 const { encryptPassword } = require("../../helpers/bcrypt");
+const { authorize, checkRole } = require('../../middlewares/authorization')
 const router = express.Router();
 
-const users = new UserModel();
+const user = new UserModel();
 
-const userSchema = Joi.object({
+const userCreateSchema = Joi.object({
     fullname: Joi.string().required(),
     email: Joi.string().email().required(),
-    password: Joi.string().required(),
-    role: Joi.string().required(),
+    password: Joi.string().min(6),
+    role: Joi.string().allow(null),
     address: Joi.string().required(),
-    gender: Joi.string().required(),
     avatar: Joi.string().uri().allow(null),
-    phone_number: Joi.string().required(),
-    driver_license: Joi.string().allow(null),
-    birthdate: Joi.date().allow(null),
+    gender: Joi.string(),
+    phone_number: Joi.string(),
+    driver_license: Joi.string().uri().allow(null),
+    birthdate: Joi.date(),
 });
 
-class UsersController extends BaseController {
+const userUpdateSchema = Joi.object({
+    fullname: Joi.string().required(),
+    role: Joi.string().allow(null),
+    address: Joi.string().required(),
+    avatar: Joi.string().uri().allow(null),
+    gender: Joi.string(),
+    driver_license: Joi.string().uri().allow(null),
+    birthdate: Joi.date(),
+});
+
+class UserController extends BaseController {
     constructor(model) {
         super(model);
         router.get("/", this.getAll);
-        router.post("/", this.validation(userSchema), this.checkUnique, this.encrypt, this.create);
+        router.post("/", this.validation(userCreateSchema), authorize, checkRole(['admin']), this.checkUnique, this.encrypt, this.create);
         router.get("/:id", this.get);
-        router.put("/:id", this.validation(userSchema), this.checkUnique, this.update);
+        router.put("/:id", this.validation(userUpdateSchema), authorize, checkRole(['admin']), this.update);
         router.delete("/:id", this.delete);
-
     }
 
     checkUnique = async (req, res, next) => {
@@ -38,10 +48,10 @@ class UsersController extends BaseController {
             where: {
                 OR: [
                     {
-                        email: req.body.email
+                        email: req.body.email,
                     },
                     {
-                        phone_number: req.body.phone_number
+                        phone_number: req.body.phone_number,
                     },
                 ],
             },
@@ -49,17 +59,21 @@ class UsersController extends BaseController {
                 email: true,
                 phone_number: true
             }
-        })
-        if (checkUnique) {
-            return next(new ValidationError("Email or Phone number already exists"));
-        };
+        });
+
+        if (checkUnique)
+            return next(new ValidationError("email or phone number already exist"));
+
         next()
-    }
+    };
+
     encrypt = async (req, res, next) => {
         const encryptedPass = await encryptPassword(req.body.password);
         req.body.password = encryptedPass;
-        next();
+        next()
     }
 }
-new UsersController(users);
+
+new UserController(user);
+
 module.exports = router;

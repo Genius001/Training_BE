@@ -1,16 +1,20 @@
 const BaseModel = require("./index");
 
+//inheritance
 class OrderModel extends BaseModel {
-
     constructor() {
-        super("orders");
+        super("order");
         this.select = {
             id: true,
-            user_id: true,
-            car_id: true,
-            status: true,
-            createdDt: true
-        }
+            order_no: true,
+            users: {
+                fullname: true
+            },
+            cars: {
+                name: true
+            },
+            status: true
+        };
     }
 }
 
